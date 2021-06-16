@@ -7,7 +7,7 @@
 <body>
 <span id="weight_data"></span>
 <script>
-  const socket=new WebSocket("ws://{{ host }}/ws_weight");socket.onclose=(e=>{console.log(`Соединение закрыто код: ${e.code} причина: ${e.reason}`)}),socket.onmessage=(e=>{document.querySelector("#weight_data").innerHTML=e.data});
+  const socket=new WebSocket(`ws://${location.host}/ws_weight`);socket.onclose=(e=>{console.log(`Соединение закрыто код: ${e.code} причина: ${e.reason}`)}),socket.onmessage=(e=>{document.querySelector("#weight_data").innerHTML=e.data});
 </script>
 </body>
 </html>

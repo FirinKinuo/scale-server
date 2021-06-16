@@ -50,10 +50,12 @@ class Serial:
         :return: float, str: Значение веса и сырые данные | Если с com-port не приходят данные, вес 0.0 и сообщение
         """
 
+        # Ждем получения данных
         if self.serial.in_waiting:
-            raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')
-            weight_data = float(re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])
+            # Если данные получены
+            raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')  # Читаем с декодированием
+            weight_data = float(re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])  # Пропускаем данные через регулярку
             return weight_data, raw_weight_data
         else:
+            # Если данных нет - отправляем 0.0 и сообщение о том, что нет данных
             return 0.0, self.EMPTY_DATA
-

@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 
 from app import Serial, Web
 
-
 # Старт сервиса
 if __name__ == '__main__':
     # Запись переменных окружения из .env в окружение python
@@ -15,5 +14,5 @@ if __name__ == '__main__':
     com_serial = Serial(port=environ.get('COMPORT_PATH'), baudrate=environ.get('COMPORT_BAUDRATE'))
 
     # Создаем экземпляр класса для работы c Web
-    web = Web(serial=com_serial, host='localhost', port=3000)
+    web = Web(serial=com_serial, host=environ.get('WEB_HOST'), port=int(environ.get('WEB_PORT')))
     web.start()  # Запускаем сервер для обработки данных

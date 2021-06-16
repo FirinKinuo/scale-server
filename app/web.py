@@ -13,6 +13,7 @@ class Web:
         self.serial = serial
         self.host = host
         self.port = port
+        self.clients = []
 
         self.ROUTES = [
             web.get('/', self._send_simple),
@@ -30,12 +31,17 @@ class Web:
         """
         websocket = web.WebSocketResponse()
         await websocket.prepare(request)
+        self.clients.append(websocket)
 
         # Цикл, который читает com-port и отправляет данные в websocket
         while True:
             data, _ = self.serial.read()
-            await websocket.send_str(f"{data}")
-            await async_sleep(0.5)  # Задержка для снятия нагрузки с процессора
+            for websocket_client in self.clients:
+                try:
+                    await websocket_client.send_str(f"{data}")
+                except ConnectionResetError:
+                    self.clients.remove(websocket_client)
+                await async_sleep(0.15)  # Задержка для снятия нагрузки с процессора
 
     async def _send_rest(self, _: web.Request) -> web.json_response():
         """

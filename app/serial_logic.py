@@ -35,7 +35,7 @@ class Serial:
                 timeout=self.timeout
             )
 
-            print(f"{self.serial.port} открыт")
+            print(f"Открыт {self.serial.port}")
 
             return self.SERIAL_OPENED
 
@@ -58,4 +58,4 @@ class Serial:
             return weight_data, raw_weight_data
         else:
             # Если данных нет - отправляем 0.0 и сообщение о том, что нет данных
-            return 0.0, self.EMPTY_DATA
+            return -0.0, self.EMPTY_DATA

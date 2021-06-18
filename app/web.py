@@ -35,10 +35,15 @@ class Web:
 
         # Цикл, который читает com-port и отправляет данные в websocket
         while True:
-            data, _ = self.serial.read()
+            data, message = self.serial.read()
             for websocket_client in self.clients:
                 try:
-                    await websocket_client.send_str(f"{data}")
+                    if message != self.serial.EMPTY_DATA:
+                        # Если com-port не пуст, отправляем данные веса
+                        await websocket_client.send_str(f"{data}")
+                    else:
+                        # Если пуст, то отпавляем 0.0 и сообщение о том, что данные не поступают
+                        await websocket_client.send_str(f"{data} / {message}")
                 except ConnectionResetError:
                     self.clients.remove(websocket_client)
                 await async_sleep(0.15)  # Задержка для снятия нагрузки с процессора

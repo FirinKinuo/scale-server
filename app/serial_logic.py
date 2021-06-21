@@ -1,30 +1,46 @@
 import serial
 import re
 
+from .fpylog import Log
+
+
+logger = Log(file_log=True)
+
 
 class Serial:
     """
     Класс для работы с COM-PORT
     """
     EMPTY_DATA = "Отсутствуют данные с COM-PORT"
+    TYPE_INPUT = "Порт ввода"
+    TYPE_OUTPUT = "Порт вывода"
     SERIAL_CLOSED = False
     SERIAL_OPENED = True
 
-    def __init__(self, port: str, baudrate=9600, byte_size=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-                 stop_bits=serial.STOPBITS_ONE, timeout=0):
+    def __init__(self, port: str, baudrate: int = 9600,
+                 byte_size=serial.EIGHTBITS, parity=serial.PARITY_NONE, stop_bits=serial.STOPBITS_ONE,
+                 timeout: float = 0, output_serial=None, direction: str = "Порт ввода"):
         self.port = port
         self.baudrate = baudrate
         self.byte_size = byte_size
         self.parity = parity
         self.stop_bits = stop_bits
         self.timeout = timeout
+        self.data = 0.0
         self.serial = None
+        self.output_serial = output_serial
+        self.direction = direction
+
+        if self.output_serial is not None:
+            for com in self.output_serial:
+                com.start()
 
     def start(self) -> bool:
         """
         Открывает порт и делает его доступным для чтения и записи
         :return: SERIAL_OPENED или SERIAL_CLOSE
         """
+        logger.info(f"Попытка открыть {self.port} - {self.baudrate} Бод | {self.direction}")
         try:
             self.serial = serial.Serial(
                 port=self.port,
@@ -35,13 +51,13 @@ class Serial:
                 timeout=self.timeout
             )
 
-            print(f"Открыт {self.serial.port}")
+            logger.success(f"Открыт {self.serial.port}")
 
             return self.SERIAL_OPENED
 
         except serial.SerialException as err:
             err_msg = err.args[0]
-            print(f"Невозможно открыть порт {self.port} {err_msg[err_msg.find(':'):]}")
+            logger.error(f"Невозможно открыть порт {self.port} {err_msg[err_msg.find(':'):]}")
             return self.SERIAL_CLOSED
 
     def read(self) -> [float, str]:
@@ -54,8 +70,24 @@ class Serial:
         if self.serial.in_waiting:
             # Если данные получены
             raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')  # Читаем с декодированием
-            weight_data = float(re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])  # Пропускаем данные через регулярку
-            return weight_data, raw_weight_data
+            try:
+                self.data = float(re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])  # Пропускаем данные через регулярку
+
+                # Если был передан ком-порт на вывод данных, то отправляем в него данные
+                if self.output_serial is not None:
+                    self.output_serial.send_board(self.data)
+            except IndexError:
+                pass
+
+            return self.data, raw_weight_data
         else:
-            # Если данных нет - отправляем 0.0 и сообщение о том, что нет данных
+            # Если данных нет - отправляем -0.0 и сообщение о том, что нет данных
             return -0.0, self.EMPTY_DATA
+
+    def send_board(self, message: str) -> None:
+        """
+        Метод для отправки данных на табло-повторитель
+        :param message: Данные для отображения на табло
+        :return:
+        """
+        self.serial.write(b'\x81\x20\x20' + str.encode(message) + b'\x20\x20\x0D\x0A\x00')

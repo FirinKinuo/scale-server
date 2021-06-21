@@ -1,5 +1,7 @@
 from aiohttp import web
+import asyncio
 from asyncio import sleep as async_sleep
+from aiojobs.aiohttp import atomic
 import aiohttp_jinja2
 import jinja2
 
@@ -77,7 +79,10 @@ class Web:
         Метод, запускающий передачу данных в web
         :return:
         """
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.serial.background_reading())
         web_app = web.Application()
         aiohttp_jinja2.setup(web_app, loader=jinja2.FileSystemLoader('templates'))
         web_app.add_routes(self.ROUTES)
         web.run_app(web_app, host=self.host, port=self.port)
+

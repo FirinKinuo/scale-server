@@ -1,6 +1,7 @@
 import serial
 import re
-
+import asyncio
+import aiojobs
 from .fpylog import Log
 
 
@@ -34,6 +35,11 @@ class Serial:
         if self.output_serial is not None:
             for com in self.output_serial:
                 com.start()
+
+    async def background_reading(self):
+        while True:
+            self.read()
+            await asyncio.sleep(0.3)
 
     def start(self) -> bool:
         """
@@ -76,14 +82,19 @@ class Serial:
                 # Если был передан ком-порт на вывод данных, то отправляем в него данные
                 if self.output_serial is not None:
                     for com in self.output_serial:
-                        com.send_board(self.data)
+                        try:
+                            com.send_board(str(self.data))
+                        except AttributeError:
+                            pass
             except IndexError:
                 pass
 
+            logger.info(f"{self.data}")
             return self.data, raw_weight_data
         else:
-            # Если данных нет - отправляем -0.0 и сообщение о том, что нет данных
-            return -0.0, self.EMPTY_DATA
+            # Если данных нет - отправляем последние данные
+            logger.warn(f"{self.data}")
+            return self.data
 
     def send_board(self, message: str) -> None:
         """

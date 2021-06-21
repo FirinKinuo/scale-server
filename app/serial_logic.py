@@ -75,7 +75,8 @@ class Serial:
 
                 # Если был передан ком-порт на вывод данных, то отправляем в него данные
                 if self.output_serial is not None:
-                    self.output_serial.send_board(self.data)
+                    for com in self.output_serial:
+                        com.send_board(self.data)
             except IndexError:
                 pass
 

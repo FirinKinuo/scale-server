@@ -63,8 +63,9 @@ def _setup_new_env_data() -> str:
                      f"WEB_PORT={env_params['web']['port']}\n" \
                      f"WEB_HOST={env_params['web']['host']}\n"
 
-        for index, output_com in enumerate(env_params['outputs']):
-            data_write += f"{index}_OUTPUT_COMPORT_DATA={output_com}\n"
+        if 'outputs' in env_params:
+            for index, output_com in enumerate(env_params['outputs']):
+                data_write += f"{index}_OUTPUT_COMPORT_DATA={output_com}\n"
 
         env_file.write(data_write)
 
@@ -109,6 +110,10 @@ if __name__.endswith('__main__'):
     _load_env_data()
 
     com_serial = _init_comport()
+
+    if com_serial.serial is None:
+        print(f"\n\033[31mОшибка, не получается открыть порт ввода, проверьте настройки")
+        exit(-1)
 
     # Создаем экземпляр класса для работы c Web
     web = Web(serial=com_serial, host=environ.get('WEB_HOST'), port=int(environ.get('WEB_PORT')))

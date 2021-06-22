@@ -61,8 +61,7 @@ class Serial:
             return self.SERIAL_OPENED
 
         except serial.SerialException as err:
-            err_msg = err.args[0]
-            logger.error(f"Невозможно открыть порт {self.port} {err_msg[err_msg.find(':'):]}")
+            logger.error(f"Невозможно открыть порт {self.port} {err}")
             return self.SERIAL_CLOSED
 
     def read(self) -> [float, str]:

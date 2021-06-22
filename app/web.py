@@ -1,7 +1,6 @@
 from aiohttp import web
 import asyncio
 from asyncio import sleep as async_sleep
-from aiojobs.aiohttp import atomic
 import aiohttp_jinja2
 import jinja2
 

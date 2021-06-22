@@ -25,8 +25,8 @@ options = {
     }
 }
 
-setup(name='hello_world',
-      version='0.0.1',
-      description='My Hello World App!',
+setup(name='weight_comport',
+      version='1.0.1',
+      description='Чтение компорта промышленных весов с отправкой данных по webhook и на табло по компорту',
       executables=executables,
       options=options)

@@ -1,7 +1,6 @@
 import serial
 import re
 import asyncio
-import aiojobs
 from .fpylog import Log
 
 
@@ -90,7 +89,7 @@ class Serial:
                 pass
 
             logger.info(f"{self.data}")
-            return self.data, raw_weight_data
+            return self.data
         else:
             # Если данных нет - отправляем последние данные
             logger.warn(f"{self.data}")

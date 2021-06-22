@@ -37,15 +37,11 @@ class Web:
 
         # Цикл, который читает com-port и отправляет данные в websocket
         while True:
-            data, message = self.serial.read()
+            data = self.serial.read()
+
             for websocket_client in self.clients:
                 try:
-                    if message != self.serial.EMPTY_DATA:
-                        # Если com-port не пуст, отправляем данные веса
-                        await websocket_client.send_str(f"{data}")
-                    else:
-                        # Если пуст, то отпавляем 0.0 и сообщение о том, что данные не поступают
-                        await websocket_client.send_str(f"{data} / {message}")
+                    await websocket_client.send_str(f"{data}")
                 except ConnectionResetError:
                     self.clients.remove(websocket_client)
                 await async_sleep(0.15)  # Задержка для снятия нагрузки с процессора
@@ -79,10 +75,13 @@ class Web:
         Метод, запускающий передачу данных в web
         :return:
         """
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.serial.background_reading())
+
         web_app = web.Application()
         aiohttp_jinja2.setup(web_app, loader=jinja2.FileSystemLoader('templates'))
+
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.serial.background_reading())
+
         web_app.add_routes(self.ROUTES)
         web.run_app(web_app, host=self.host, port=self.port)
 

@@ -19,7 +19,7 @@ def _setup_new_env_data() -> str:
     :return: Путь к файлу .env
     """
 
-    def input_env_data(message: str = "", error_count: int = 3, return_type: type = str, default=None) -> str:
+    def input_env_data(message: str = "", error_count: int = 3, return_type: type = str, default=None) -> [str, int]:
         while True:
             try:
                 return return_type(input(message) or default)
@@ -29,14 +29,14 @@ def _setup_new_env_data() -> str:
 
     env_params = {}
 
-    print("Первый запуск, необходимо задать параметры:")
+    print("~~~~~Первый запуск, необходимо задать параметры~~~~~\n")
 
     serial_ports = list_ports.comports()
-    print("Доступные ком-порты:")
-    for port, desc in serial_ports:
-        print(f"{port}: {desc}")
+    print("---Доступные ком-порты:")
+    for port in serial_ports:
+        print(f"{port.description}")
 
-    print('---Параметры порта ввода---')
+    print('\n---Параметры порта ввода---')
     env_params['input'] = {
         'path': input_env_data("Ком-порт: "),
         'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int)
@@ -45,7 +45,7 @@ def _setup_new_env_data() -> str:
     print('---Параметры портов вывода---')
     if input_env_data("Настроить порты вывода?(y/n) ").lower() in ['yes', 'y', 'д', 'да']:
         env_params['outputs'] = []
-        for port_iter in range(0, int(input_env_data("Количество портов вывода: "))):
+        for port_iter in range(0, input_env_data("Количество портов вывода: ", return_type=int, default=0)):
             env_params['outputs'].append({
                 'path': input_env_data("Ком-порт: "),
                 'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int)
@@ -60,8 +60,8 @@ def _setup_new_env_data() -> str:
     with open('.env', 'w') as env_file:
         data_write = f"COMPORT_PATH={env_params['input']['path']}\n" \
                      f"COMPORT_BAUDRATE={env_params['input']['baudrate']}\n" \
-                     f"WEB_PORT={env_params['web']['host']}\n" \
-                     f"WEB_HOST={env_params['web']['port']}\n"
+                     f"WEB_PORT={env_params['web']['port']}\n" \
+                     f"WEB_HOST={env_params['web']['host']}\n"
 
         for index, output_com in enumerate(env_params['outputs']):
             data_write += f"{index}_OUTPUT_COMPORT_DATA={output_com}\n"

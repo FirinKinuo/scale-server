@@ -29,7 +29,11 @@ def _setup_new_env_data() -> str:
 
     env_params = {}
 
-    print("~~~~~Первый запуск, необходимо задать параметры~~~~~\n")
+    print("~~~~~Первый запуск, необходимо задать параметры~~~~~\n"
+          "--Вносите данные внимательно\n"
+          "--Для систем Windows указывается COM*\n"
+          "--Для систем Linux указывается полный путь /dev/ttyS*\n"
+          "--Данные по-умолчанию вносятся простым нажатием на Enter\n")
 
     serial_ports = list_ports.comports()
     print("---Доступные ком-порты:")
@@ -107,13 +111,10 @@ def _init_comport() -> Serial:
 
 # Старт сервиса
 if __name__.endswith('__main__'):
+    print("Weight ComPort v1.0.2 | https://github.com/FirinKinuo")
     _load_env_data()
 
     com_serial = _init_comport()
-
-    if com_serial.serial is None:
-        print(f"\n\033[31mОшибка, не получается открыть порт ввода, проверьте настройки")
-        exit(-1)
 
     # Создаем экземпляр класса для работы c Web
     web = Web(serial=com_serial, host=environ.get('WEB_HOST'), port=int(environ.get('WEB_PORT')))

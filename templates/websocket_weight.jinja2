@@ -3,11 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Весы</title>
+    {% if web_form %}
+    <style>
+        body {
+            background: linear-gradient(to top, #648520, #8aa652);
+            overflow: hidden;
+            height: 100vh;
+        }
+        #weight_data {
+            color: white;
+            text-align: center;
+            font-size: 30px;
+            font-family: sans-serif;
+        }
+    </style>
+    {% endif %}
 </head>
 <body>
-<span id="weight_data"></span>
+<div id="weight_data"></div>
 <script>
-  const socket=new WebSocket(`ws://${location.host}/ws_weight`);socket.onclose=(e=>{console.log(`Соединение закрыто код: ${e.code} причина: ${e.reason}`)}),socket.onmessage=(e=>{document.querySelector("#weight_data").innerHTML=e.data});
+  const socket = new WebSocket(`ws://${location.host}/ws_weight`);
+  socket.onclose = (e => {
+    console.log(`Соединение закрыто код: ${e.code} причина: ${e.reason}`)
+  }), socket.onmessage = (e => {
+    document.querySelector("#weight_data").innerHTML = e.data
+  });
 </script>
 </body>
 </html>

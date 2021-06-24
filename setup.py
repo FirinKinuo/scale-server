@@ -1,4 +1,6 @@
 from cx_Freeze import setup, Executable
+import sys
+
 
 executables = [Executable('run.py', targetName='weight_comport.exe')]
 
@@ -25,8 +27,12 @@ options = {
     }
 }
 
+if sys.platform.startswith('linux'):
+    executables = [Executable('run.py', targetName='weight_comport')]
+    options['build_exe']['build_exe'] = 'build_linux'
+
 setup(name='weight_comport',
-      version='1.0.1',
+      version='1.0.2',
       description='Чтение компорта промышленных весов с отправкой данных по webhook и на табло по компорту',
       executables=executables,
       options=options)

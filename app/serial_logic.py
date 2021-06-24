@@ -3,8 +3,7 @@ import re
 import asyncio
 from .fpylog import Log
 
-
-logger = Log(file_log=True)
+logger = Log(file_log=False)
 
 
 class Serial:
@@ -71,28 +70,31 @@ class Serial:
         """
 
         # Ждем получения данных
-        if self.serial.in_waiting:
-            # Если данные получены
-            raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')  # Читаем с декодированием
-            try:
-                self.data = float(re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])  # Пропускаем данные через регулярку
+        try:
+            if self.serial.in_waiting:
+                # Если данные получены
+                raw_weight_data = self.serial.read(self.serial.in_waiting).decode(
+                    'Windows-1251')  # Читаем с декодированием
+                try:
+                    self.data = float(
+                        re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])  # Пропускаем данные через регулярку
 
-                # Если был передан ком-порт на вывод данных, то отправляем в него данные
-                if self.output_serial is not None:
-                    for com in self.output_serial:
-                        try:
-                            com.send_board(str(self.data))
-                        except AttributeError:
-                            pass
-            except IndexError:
-                pass
+                    # Если был передан ком-порт на вывод данных, то отправляем в него данные
+                    if self.output_serial is not None:
+                        for com in self.output_serial:
+                            try:
+                                com.send_board(str(self.data))
+                            except AttributeError:
+                                pass
+                except IndexError:
+                    pass
 
-            logger.info(f"{self.data}")
-            return self.data
-        else:
-            # Если данных нет - отправляем последние данные
-            logger.warn(f"{self.data}")
-            return self.data
+                return self.data
+            else:
+                return self.data
+
+        except AttributeError:
+            logger.error(f"Не получается открыть порт ввода, проверьте настройки")
 
     def send_board(self, message: str) -> None:
         """

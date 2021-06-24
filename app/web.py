@@ -18,6 +18,7 @@ class Web:
 
         self.ROUTES = [
             web.get('/', self._send_simple),
+            web.get('/web', self._send_web_form),
             web.get('/ws_weight', self._weight_websocket),
             web.get('/api', self._send_rest)
         ]
@@ -51,14 +52,8 @@ class Web:
         :param _:
         :return:
         """
-        data, message = self.serial.read()
-
-        if message != self.serial.EMPTY_DATA:
-            # Если com-port не пуст, отправляем данные веса
-            return web.json_response(status=200, data={'weight': data})
-        else:
-            # Если пуст, то отпавляем 0.0 и сообщение о том, что данные не поступают
-            return web.json_response(status=200, data={'weight': data, 'message': message})
+        data = self.serial.read()
+        return web.json_response(status=200, data={'weight': data})
 
     @aiohttp_jinja2.template('websocket_weight.jinja2')
     async def _send_simple(self, _: web.Request) -> dict:
@@ -67,7 +62,16 @@ class Web:
         :param _:
         :return:
         """
-        return {'host': f"{self.host}:{self.port}"}
+        return
+
+    @aiohttp_jinja2.template('websocket_weight.jinja2')
+    async def _send_web_form(self, _: web.Request) -> dict:
+        """
+        # Отправка данных в браузер в простой форме
+        :param _:
+        :return:
+        """
+        return {'web_form': True}
 
     def start(self) -> None:
         """
@@ -80,7 +84,12 @@ class Web:
 
         loop = asyncio.get_event_loop()
         loop.create_task(self.serial.background_reading())
-
         web_app.add_routes(self.ROUTES)
+
+        print("\033[35mДоступные URI:\n\033[37m"
+              "\033[35m/\033[37m    - Простой вывод данных\n"
+              "\033[35m/web\033[37m - вывод веб-формы\n"
+              "\033[35m/api\033[37m - получение данных по REST")
+
         web.run_app(web_app, host=self.host, port=self.port)
 

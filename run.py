@@ -109,7 +109,7 @@ def _init_comport() -> Serial:
 
 # Старт сервиса
 if __name__.endswith('__main__'):
-    print("Weight ComPort v1.0.4 | https://github.com/FirinKinuo")
+    print("Weight ComPort v1.1.0 | https://github.com/FirinKinuo")
     _load_env_data()
 
     com_serial = _init_comport()

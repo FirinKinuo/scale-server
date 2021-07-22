@@ -35,7 +35,7 @@ if sys.platform.startswith('linux'):
     options['build_exe']['build_exe'] = 'build_linux'
 
 setup(name='weight_comport',
-      version='1.0.4',
+      version='1.1.0',
       description='Чтение компорта промышленных весов с отправкой данных по webhook и на табло по компорту',
       executables=executables,
       options=options)

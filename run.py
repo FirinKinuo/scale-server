@@ -1,5 +1,6 @@
 import ast
 from sys import platform
+from sys import path as sys_path
 from os import environ, path
 from dotenv import load_dotenv
 from serial.tools import list_ports
@@ -73,7 +74,7 @@ def _setup_new_env_data() -> str:
 
         env_file.write(data_write)
 
-    return path.join(path.dirname(__file__), '.env')
+    return path.join(sys_path[0], '.env')
 
 
 def _load_env_data() -> None:
@@ -81,12 +82,9 @@ def _load_env_data() -> None:
     Запись переменных окружения из .env в окружение python
     :return:
     """
-    dotenv_path = path.join(path.dirname(__file__), '.env')
+    dotenv_path = path.join(sys_path[0], '.env')
     if path.exists(dotenv_path):
-        if input("Изменить настройки?(y/n) ").lower() in ['yes', 'y', 'д', 'да']:
-            load_dotenv(_setup_new_env_data())
-        else:
-            load_dotenv(dotenv_path)
+        load_dotenv(dotenv_path)
     else:
         load_dotenv(_setup_new_env_data())
 
@@ -111,7 +109,7 @@ def _init_comport() -> Serial:
 
 # Старт сервиса
 if __name__.endswith('__main__'):
-    print("Weight ComPort v1.0.2 | https://github.com/FirinKinuo")
+    print("Weight ComPort v1.0.4 | https://github.com/FirinKinuo")
     _load_env_data()
 
     com_serial = _init_comport()

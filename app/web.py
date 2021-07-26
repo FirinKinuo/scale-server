@@ -69,8 +69,11 @@ class Web:
 
         try:
             data = self.serial_list[int(request.match_info['com'] if 'com' in request.match_info else 1)-1].read()
+            if data is None:
+                raise ValueError
+
             return {'data': data}
-        except [ValueError, IndexError]:
+        except (ValueError, IndexError):
             return {'data': 'Ошибка'}
 
     async def _send_simple(self, request: web.Request) -> web.Response:
@@ -79,10 +82,13 @@ class Web:
         """
         try:
             data = self.serial_list[int(request.match_info['com'] if 'com' in request.match_info else 1)-1].read()
+            if data is None:
+                raise ValueError
+
             return web.Response(
                 body=f"ves:{data/1000}"
             )
-        except [ValueError, IndexError]:
+        except (ValueError, IndexError):
             return web.Response(body='err')
 
     async def _start_site(self, app: web.Application, host: str, port: int) -> None:
@@ -113,7 +119,8 @@ class Web:
         web_main.add_routes(self.ROUTES)
         web_sub.add_routes([
             web.get('/', self._send_web_form),
-            web.get(r'/{ws_weight:\d+}', self._weight_websocket),
+            web.get(r'/{com:\d+}', self._send_web_form),
+            web.get(r'/ws_weight{com:\d+}', self._weight_websocket),
         ])
 
         aiohttp_jinja2.setup(web_sub, loader=jinja2.FileSystemLoader(path.join(sys_path[0], 'templates')))

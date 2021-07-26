@@ -1,33 +1,22 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE HTML PUBLIC />
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Весы</title>
-    {% if web_form %}
-    <style>
-        body {
-            background: linear-gradient(to top, #648520, #8aa652);
-            overflow: hidden;
-            height: 100vh;
-        }
-        #weight_data {
-            color: white;
-            text-align: center;
-            font-size: 30px;
-            font-family: sans-serif;
-        }
-    </style>
-    {% endif %}
+    <meta http-equiv=Refresh content=1/>
+    <title>auto</title>
+    <style> html, body {
+        background-color: green;
+        background: linear-gradient(to top, #648520, #8aa652);
+        overflow: hidden;
+    }
+
+    div {
+        color: white;
+        text-align: center;
+        font-size: 30px;
+        font-family: sans-serif;
+    } </style>
 </head>
 <body>
-<div id="weight_data"></div>
-<script>
-  const socket = new WebSocket(`ws://${location.host}/ws_weight`);
-  socket.onclose = (e => {
-    console.log(`Соединение закрыто код: ${e.code} причина: ${e.reason}`)
-  }), socket.onmessage = (e => {
-    document.querySelector("#weight_data").innerHTML = e.data
-  });
-</script>
+<div id=subscribe>{{ data }}</div>
 </body>
 </html>

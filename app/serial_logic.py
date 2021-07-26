@@ -32,7 +32,8 @@ class Serial:
 
         if self.output_serial is not None:
             for com in self.output_serial:
-                com.start()
+                if com.serial is None:
+                    com.start()
 
     async def background_reading(self):
         while True:
@@ -63,10 +64,10 @@ class Serial:
             logger.error(f"Невозможно открыть порт {self.port} {err}")
             return self.SERIAL_CLOSED
 
-    def read(self) -> [float, str]:
+    def read(self) -> [int, str]:
         """
-        Метод для чтения данных из компорта, возвращает float-значение с весом
-        :return: float, str: Значение веса и сырые данные | Если с com-port не приходят данные, вес 0.0 и сообщение
+        Метод для чтения данных из компорта, возвращает int-значение веса в КГ
+        :return: int, str: Значение веса и сырые данные | Если с com-port не приходят данные, вес 0.0 и сообщение
         """
 
         # Ждем получения данных
@@ -76,8 +77,8 @@ class Serial:
                 raw_weight_data = self.serial.read(self.serial.in_waiting).decode(
                     'Windows-1251')  # Читаем с декодированием
                 try:
-                    self.data = float(
-                        re.findall("[+-]?\d+\.\d+", raw_weight_data)[0])  # Пропускаем данные через регулярку
+                    self.data = int(
+                        re.findall("[+-]?\d+\.\d+", raw_weight_data)[0]) * 1000  # Пропускаем данные через регулярку
 
                     # Если был передан ком-порт на вывод данных, то отправляем в него данные
                     if self.output_serial is not None:
@@ -102,4 +103,4 @@ class Serial:
         :param message: Данные для отображения на табло
         :return:
         """
-        self.serial.write(b'\x81\x20\x20' + str.encode(message) + b'\x20\x20\x0D\x0A\x00')
+        self.serial.write(b'\x81\x20\x20' + str.encode(f"{int(message):05}") + b'\x20\x20\x0d\x0A')

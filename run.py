@@ -64,12 +64,8 @@ def _setup_new_env_data() -> str:
         data_write = f"WEB_PORT={env_params['web']['port']}\n" \
                      f"WEB_HOST={env_params['web']['host']}\n"
 
-        for index, input_com in enumerate(env_params['inputs']):
-            data_write += f"{index}_INPUT_COMPORT_DATA={input_com}\n"
-
-        if 'outputs' in env_params:
-            for index, output_com in enumerate(env_params['outputs']):
-                data_write += f"{index}_OUTPUT_COMPORT_DATA={output_com}\n"
+        data_write += f"INPUT_COM={env_params['inputs']}\n"
+        data_write += f"OUTPUT_COM={env_params['outputs']}\n"
 
         env_file.write(data_write)
 
@@ -102,11 +98,9 @@ def _init_comports() -> list:
                                                        output_serial=output_com, direction=Serial.TYPE_OUTPUT)
 
     # Генератор списка с классами компорта на вывод
-    output_comports = [init_output_com(ast.literal_eval(environ.get(com)))
-                       for com in environ.keys() if "OUTPUT_COMPORT_DATA" in com]
+    output_comports = [init_output_com(com) for com in ast.literal_eval(environ.get('OUTPUT_COM'))]
 
-    return [init_input_com(ast.literal_eval(environ.get(com)), output_comports)
-            for com in environ.keys() if "INPUT_COMPORT_DATA" in com]
+    return [init_input_com(com, output_comports) for com in ast.literal_eval(environ.get('INPUT_COM'))]
 
 
 # Старт сервиса
@@ -117,7 +111,7 @@ if __name__.endswith('__main__'):
     Из-за которых нормальный код приходится переделывать в какое-то уебище..
     Лишь бы со стороны 1С не было ебанных проблем..
     """
-    print("Weight ComPort v1.2.1 | https://github.com/FirinKinuo")
+    print("Weight ComPort v1.3.1 | https://github.com/FirinKinuo")
     _load_env_data()
 
     com_serial_list = _init_comports()

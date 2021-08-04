@@ -51,7 +51,8 @@ def _setup_new_env_data() -> str:
     if input_env_data("Настроить порты вывода?(y/n) ").lower() in ['yes', 'y', 'д', 'да']:
         env_params['outputs'] = [{
             'path': input_env_data("Ком-порт: "),
-            'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int)
+            'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int),
+            'auto-transfer': input_env_data("Данные передаются автоматически?", default=True, return_type=bool)
         } for _ in range(0, input_env_data("Количество портов вывода: ", return_type=int, default=0))]
 
     print('---Параметры веб-сервера---')
@@ -95,7 +96,8 @@ def _init_comports() -> list:
                                             direction=Serial.TYPE_OUTPUT)
 
     def init_input_com(com, output_com): return Serial(port=com.get('path'), baudrate=int(com.get('baudrate')),
-                                                       output_serial=output_com, direction=Serial.TYPE_OUTPUT)
+                                                       output_serial=output_com, direction=Serial.TYPE_OUTPUT,
+                                                       auto_transfer=com.get('auto-transfer'))
 
     # Генератор списка с классами компорта на вывод
     output_comports = [init_output_com(com) for com in ast.literal_eval(environ.get('OUTPUT_COM'))]

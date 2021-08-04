@@ -18,7 +18,7 @@ class Serial:
 
     def __init__(self, port: str, baudrate: int = 9600,
                  byte_size=serial.EIGHTBITS, parity=serial.PARITY_NONE, stop_bits=serial.STOPBITS_ONE,
-                 timeout: float = 0, output_serial=None, direction: str = "Порт ввода"):
+                 timeout: float = 0, output_serial=None, direction: str = "Порт ввода", auto_transfer: bool = True):
         self.port = port
         self.baudrate = baudrate
         self.byte_size = byte_size
@@ -29,6 +29,7 @@ class Serial:
         self.serial = None
         self.output_serial = output_serial
         self.direction = direction
+        self.auto_transfer = auto_transfer
 
         if self.output_serial is not None:
             for com in self.output_serial:
@@ -72,13 +73,17 @@ class Serial:
 
         # Ждем получения данных
         try:
+            if not self.auto_transfer:
+                self.serial.write(b'\x0a')
+
             if self.serial.in_waiting:
                 # Если данные получены
-                raw_weight_data = self.serial.read(self.serial.in_waiting).decode(
-                    'Windows-1251')  # Читаем с декодированием
+                raw_weight_data = self.serial.read(self.serial.in_waiting)  # Читаем с декодированием
                 try:
                     self.data = int(
-                        re.findall("[+-]?\d+\.\d+", raw_weight_data)[0]) * 1000  # Пропускаем данные через регулярку
+                        re.findall("[+-]?\d+\.\d+", raw_weight_data.decode('Windows-1251'))[
+                            0]) * 1000 if self.auto_transfer else int(
+                        ''.join(str(x) for x in raw_weight_data[:-2])[::-1])  # Пропускаем данные через регулярку
 
                     # Если был передан ком-порт на вывод данных, то отправляем в него данные
                     if self.output_serial is not None:

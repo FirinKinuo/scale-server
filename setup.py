@@ -7,14 +7,14 @@ executables = [Executable('run.py', targetName='weight_comport.exe')]
 
 excludes = ['unicodedata', 'tkinter']
 
-includes = ['dotenv', 'aiohttp', 'jinja2', 'aiohttp_jinja2', 'serial']
+includes = ['dotenv', 'aiohttp', 'jinja2', 'aiohttp_jinja2', 'serial', 'requests']
 
 zip_include_packages = ["aiohttp", "aiohttp_jinja2", "app", "async_timeout", "asyncio",
                         "attr", "chardet", "collections", "concurrent", "ctypes",
                         "distutils", "dotenv", "email", "encodings", "html",
                         "http", "idna", "importlib", "jinja2", "json",
                         "lib2to3", "logging", "markupsafe", "multidict", "multiprocessing",
-                        "pydoc_data", "serial", "urllib", "xml", "xmlrpc", "yarl"]
+                        "pydoc_data", "serial", "urllib", "xml", "xmlrpc", "yarl", 'requests']
 
 include_dirs = ['templates/']
 

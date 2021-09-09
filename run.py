@@ -5,7 +5,8 @@ from os import environ, path
 from dotenv import load_dotenv
 from serial.tools import list_ports
 
-from app import Serial, Web
+from app import Serial, Web, WeightSocket
+from app.utils import is_ip_string
 
 if platform.startswith('win32') or platform.startswith('cygwin'):
     import ctypes
@@ -20,12 +21,11 @@ def _setup_new_env_data() -> str:
     :return: Путь к файлу config.env
     """
 
-    def input_env_data(message: str = "", error_count: int = 3, return_type: type = str, default=None) -> [str, int]:
+    def input_env_data(message: str = "", return_type: type = str, default=None) -> [str, int]:
         while True:
             try:
                 return return_type(input(message) or default)
             except ValueError:
-                error_count -= 1
                 print("Ошибка ввода, попробуйте еще раз")
 
     env_params = {}
@@ -43,16 +43,17 @@ def _setup_new_env_data() -> str:
 
     print('\n---Параметры порта ввода---')
     env_params['inputs'] = [{
-        'path': input_env_data("Ком-порт: "),
-        'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int)
+        'path': input_env_data("Ком-порт или IP: "),
+        'baudrate': input_env_data("Частота опроса (9600 по-умолчанию, если IP - указывается порт): ", default=9600,
+                                   return_type=int),
+        'auto-transfer': input_env_data("Данные передаются автоматически?", default=True, return_type=bool)
     } for _ in range(0, input_env_data("Количество портов ввода: ", return_type=int, default=0))]
 
     print('---Параметры портов вывода---')
     if input_env_data("Настроить порты вывода?(y/n) ").lower() in ['yes', 'y', 'д', 'да']:
         env_params['outputs'] = [{
             'path': input_env_data("Ком-порт: "),
-            'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int),
-            'auto-transfer': input_env_data("Данные передаются автоматически?", default=True, return_type=bool)
+            'baudrate': input_env_data("Частота опроса (9600 по-умолчанию): ", default=9600, return_type=int)
         } for _ in range(0, input_env_data("Количество портов вывода: ", return_type=int, default=0))]
 
     print('---Параметры веб-сервера---')
@@ -66,7 +67,8 @@ def _setup_new_env_data() -> str:
                      f"WEB_HOST={env_params['web']['host']}\n"
 
         data_write += f"INPUT_COM={env_params['inputs']}\n"
-        data_write += f"OUTPUT_COM={env_params['outputs']}\n"
+        if 'outputs' in env_params:
+            data_write += f"OUTPUT_COM={env_params['outputs']}\n"
 
         env_file.write(data_write)
 
@@ -96,11 +98,13 @@ def _init_comports() -> list:
                                             direction=Serial.TYPE_OUTPUT)
 
     def init_input_com(com, output_com): return Serial(port=com.get('path'), baudrate=int(com.get('baudrate')),
-                                                       output_serial=output_com, direction=Serial.TYPE_OUTPUT,
-                                                       auto_transfer=com.get('auto-transfer'))
+                                                       output_serial=output_com, direction=Serial.TYPE_INPUT,
+                                                       auto_transfer=com.get('auto-transfer')) if not is_ip_string(
+        com.get('path')) else WeightSocket(host=com.get('path'), output_serial=output_com)
 
     # Генератор списка с классами компорта на вывод
-    output_comports = [init_output_com(com) for com in ast.literal_eval(environ.get('OUTPUT_COM'))]
+    output_comports = [init_output_com(com) for com in
+                       ast.literal_eval(environ.get('OUTPUT_COM'))] if 'OUTPUT_COM' in environ else []
 
     return [init_input_com(com, output_comports) for com in ast.literal_eval(environ.get('INPUT_COM'))]
 
@@ -113,7 +117,7 @@ if __name__.endswith('__main__'):
     Из-за которых нормальный код приходится переделывать в какое-то уебище..
     Лишь бы со стороны 1С не было ебанных проблем..
     """
-    print("Weight ComPort v1.3.1 | https://github.com/FirinKinuo")
+    print("Weight ComPort v1.3.9 | https://github.com/FirinKinuo")
     _load_env_data()
 
     com_serial_list = _init_comports()

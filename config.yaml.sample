@@ -1,0 +1,37 @@
+---
+debug: True
+web:
+  host: localhost
+  port: 3000
+
+
+# Protocols:
+#
+# Serial:
+#   MIDL
+#
+# Ethernet:
+#    Proto100
+#    MERA
+#
+serial:
+  input:
+    - port: /dev/ttyS0
+      baudrate: 9600
+      byte_size: 8
+      parity: N
+      stop_bits: 1
+      auto: True
+      protocol: MIDL
+
+    - host: localhost
+      port: 5001
+      protocol: Proto100
+
+  output:
+    - port: /dev/ttyS0
+      baudrate: 9600
+      byte_size: 8
+      parity: N
+      stop_bits: 1
+---

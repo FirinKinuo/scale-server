@@ -3,18 +3,18 @@ import sys
 from sys import path as sys_path
 from os import path
 
-executables = [Executable('run.py', targetName='weight_comport.exe')]
+executables = [Executable('app.__main__.py', targetName='weight_comport.exe')]
 
 excludes = ['unicodedata', 'tkinter']
 
-includes = ['dotenv', 'aiohttp', 'jinja2', 'aiohttp_jinja2', 'serial', 'requests']
+includes = ['dotenv', 'aiohttp', 'jinja2', 'aiohttp_jinja2', 'scale_serial', 'requests']
 
 zip_include_packages = ["aiohttp", "aiohttp_jinja2", "app", "async_timeout", "asyncio",
                         "attr", "chardet", "collections", "concurrent", "ctypes",
-                        "distutils", "dotenv", "email", "encodings", "html",
+                        "distutils", "email", "encodings", "html",
                         "http", "idna", "importlib", "jinja2", "json",
                         "lib2to3", "logging", "markupsafe", "multidict", "multiprocessing",
-                        "pydoc_data", "serial", "urllib", "xml", "xmlrpc", "yarl", 'requests']
+                        "pydoc_data", "scale_serial", "urllib", "xml", "xmlrpc", "yarl", 'requests']
 
 include_dirs = ['templates/']
 
@@ -31,7 +31,7 @@ options = {
 }
 
 if sys.platform.startswith('linux'):
-    executables = [Executable('run.py', targetName='weight_comport')]
+    executables = [Executable('__main__.py', targetName='weight_comport')]
     options['build_exe']['build_exe'] = 'build_linux'
 
 setup(name='weight_comport',

@@ -1,3 +1,4 @@
-from .serial_logic import Serial
-from .web import Web
-from .socket_weight import WeightSocket
+from .scales.setup import init_scales, init_output
+
+SCALES = init_scales()
+OUTPUTS = init_output()

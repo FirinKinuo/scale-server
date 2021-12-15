@@ -59,4 +59,4 @@ class MidlScale(SerialBase, ScaleBase):
         Returns:
             float: Значение веса, получаемый с ком порта
         """
-        return self._get_weight_command_mode() if self.auto_transfer else self._get_weight_continuous_mode()
+        return self._get_weight_continuous_mode() if self.auto_transfer else self._get_weight_command_mode()

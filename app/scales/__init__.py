@@ -3,6 +3,9 @@ from app.scales.percent import get_weight_percent
 
 class ScaleBase:
     """Базовый класс, описывающий все классы для работы с весами"""
+    def __init__(self, protocol: str, weight_multiplier: float = 1.0):
+        self.protocol = protocol
+        self.weight_multiplier = weight_multiplier
 
     def connect(self):
         """Макет метода для подключения к весам"""

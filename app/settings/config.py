@@ -12,7 +12,9 @@ IS_TEST = any(map(lambda path: 'tests' in path, sys.path))  # Если найд�
 
 logging.basicConfig(level=logging.INFO,
                     format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-                    datefmt="%d/%b/%Y %H:%M:%S", )
+                    datefmt="%d/%b/%Y %H:%M:%S",
+                    filename=f"{EXTERNAL_FILES_DIR}/scales.log",
+                    filemode='a')
 
 
 def get_config_from_yaml() -> dict:

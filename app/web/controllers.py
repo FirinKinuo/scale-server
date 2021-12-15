@@ -26,6 +26,7 @@ async def send_weight_data(request: web.Request) -> web.Response:
         response = f"ves:{scale.subtract_percent(weight) / 1000};vesreal:{weight / 1000}" if config.USE_PERCENT \
             else f"ves:{weight / 1000}"
 
+        log.info(f"Запрошенный вес: {response}")
     except (ValueError, IndexError) as err:
         log.error(err)
     finally:
@@ -39,6 +40,7 @@ async def set_weight_percent(cls, request: web.Request) -> web.Response:
     try:
         float(weight_percent)  # Проверяем, что передали число
         percent.set_weight_percent(weight=weight_percent)
+        log.info(f"Установлен процент {weight_percent}")
     except ValueError:
         response = web.Response(body='Ошибка, значение должно быть числом')
     finally:

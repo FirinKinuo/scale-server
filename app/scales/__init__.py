@@ -6,6 +6,7 @@ class ScaleBase:
     def __init__(self, protocol: str, weight_multiplier: float = 1.0):
         self.protocol = protocol
         self.weight_multiplier = weight_multiplier
+        self.last_weight = 0
 
     def connect(self):
         """Макет метода для подключения к весам"""

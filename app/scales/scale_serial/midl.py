@@ -1,8 +1,12 @@
 """Пакет для работы с весами фирмы МИДЛ"""
 import re
 
+from logging import getLogger
+
 from app.scales.scale_serial.base import SerialBase
 from app.scales import ScaleBase
+
+log = getLogger(__name__)
 
 
 class MidlScale(SerialBase, ScaleBase):
@@ -27,11 +31,11 @@ class MidlScale(SerialBase, ScaleBase):
         if self.serial.in_waiting:
             raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')
             try:
-                return float(re.search(r"(\d+\.?\d?)", raw_weight_data).group())
+                self.last_weight = float(re.search(r"(\d+\.?\d*)", raw_weight_data).group())
             except AttributeError as err:
-                raise ValueError(f"Невозможно получить данные с весов") from err
-        else:
-            raise ValueError(f"Невозможно получить данные с весов")
+                log.error(err)
+
+        return self.last_weight
 
     def _get_weight_command_mode(self) -> float:
         """

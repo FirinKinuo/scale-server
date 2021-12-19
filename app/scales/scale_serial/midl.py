@@ -31,8 +31,8 @@ class MidlScale(SerialBase, ScaleBase):
         if self.serial.in_waiting:
             raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')
             try:
-                self.last_weight = float(re.search(r"(\d+\.?\d*)", raw_weight_data).group())
-            except AttributeError as err:
+                self.last_weight = float(re.findall(r"(\d+\.?\d*)", raw_weight_data)[-1])
+            except (AttributeError, IndexError) as err:
                 log.error(err)
 
         return self.last_weight

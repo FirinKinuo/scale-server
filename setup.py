@@ -1,41 +1,33 @@
-from cx_Freeze import setup, Executable
-import sys
-from sys import path as sys_path
-from os import path
+from pkg_resources import parse_requirements
+from setuptools import setup
 
-executables = [Executable('app.__main__.py', targetName='weight_comport.exe')]
+NAME = "Scale Server"
+VERSION = '2.2.3'
+DESCRIPTION = 'Handler of weights of various companies for exchange with 1C by HTTP'
+MODULES = ['app', 'app.web', 'app.scales', 'app.scales.ethernet', 'app.scales.ethernet.massak',
+           'app.scales.scale_serial', 'app.settings']
 
-excludes = ['unicodedata', 'tkinter']
 
-includes = ['dotenv', 'aiohttp', 'jinja2', 'aiohttp_jinja2', 'scale_serial', 'requests']
+def load_requirements(filename: str) -> list:
+    with open(filename, 'r', encoding="utf-8") as file:
+        return [f"""{req.name}{f"[{','.join(req.extras)}]" if req.extras else ''}{req.specifier}"""
+                for req in parse_requirements(file.read())]
 
-zip_include_packages = ["aiohttp", "aiohttp_jinja2", "app", "async_timeout", "asyncio",
-                        "attr", "chardet", "collections", "concurrent", "ctypes",
-                        "distutils", "email", "encodings", "html",
-                        "http", "idna", "importlib", "jinja2", "json",
-                        "lib2to3", "logging", "markupsafe", "multidict", "multiprocessing",
-                        "pydoc_data", "scale_serial", "urllib", "xml", "xmlrpc", "yarl", 'requests']
 
-include_dirs = ['templates/']
-
-options = {
-    'build_exe': {
-        'include_msvcr': True,
-        'excludes': excludes,
-        'include_files': include_dirs,
-        'includes': includes,
-        'zip_include_packages': zip_include_packages,
-        'build_exe': 'build_windows',
-
-    }
-}
-
-if sys.platform.startswith('linux'):
-    executables = [Executable('__main__.py', targetName='weight_comport')]
-    options['build_exe']['build_exe'] = 'build_linux'
-
-setup(name='weight_comport',
-      version='1.1.0',
-      description='Чтение компорта промышленных весов с отправкой данных по webhook и на табло по компорту',
-      executables=executables,
-      options=options)
+setup(
+    name=NAME,
+    version=VERSION,
+    packages=MODULES,
+    url='https://github.com/FirinKinuo/weight-comport-processing',
+    license='GPL-3.0',
+    author='fkinuo',
+    author_email='deals@fkinuo.ru',
+    description=DESCRIPTION,
+    install_requires=load_requirements('requirements.txt'),
+    entry_points={
+        'console_scripts': [
+            'scale_server = app.__main__',
+        ]
+    },
+    include_package_data=True
+)

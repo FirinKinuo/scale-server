@@ -26,7 +26,8 @@ async def send_weight_data(request: web.Request) -> web.Response:
         response = f"ves:{scale.subtract_percent(weight) / 1000};vesreal:{weight / 1000}" if config.USE_PERCENT \
             else f"ves:{weight / 1000}"
 
-        log.info(f"Запрошенный вес: {response}")
+        log.info(f"Scale ID: {scale_id + 1} | Запрошенный вес: {response} | {scale}")
+
     except (ValueError, IndexError) as err:
         log.error(err)
     finally:

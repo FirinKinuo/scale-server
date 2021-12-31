@@ -2,6 +2,7 @@
 import re
 
 from logging import getLogger
+from time import sleep
 
 from app.scales.scale_serial.base import SerialBase
 from app.scales import ScaleBase
@@ -28,6 +29,8 @@ class MidlScale(SerialBase, ScaleBase):
         Raises:
             ValueError: Если невозможно получить данные о весе от терминала
         """
+        self.serial.flushInput()
+        sleep(0.12)
         if self.serial.in_waiting:
             raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')
             try:
@@ -49,7 +52,7 @@ class MidlScale(SerialBase, ScaleBase):
         self.serial.write(b'\x0a')
 
         if self.serial.in_waiting:
-            raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')
+            raw_weight_data = self.serial.read(self.serial.in_waiting)
             try:
                 return float(''.join(str(x) for x in raw_weight_data[:-2])[::-1])
             except AttributeError as err:

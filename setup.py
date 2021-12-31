@@ -2,7 +2,7 @@ from pkg_resources import parse_requirements
 from setuptools import setup
 
 NAME = "Scale Server"
-VERSION = '2.2.3'
+VERSION = '2.2.10'
 DESCRIPTION = 'Handler of weights of various companies for exchange with 1C by HTTP'
 MODULES = ['app', 'app.web', 'app.scales', 'app.scales.ethernet', 'app.scales.ethernet.massak',
            'app.scales.scale_serial', 'app.settings']

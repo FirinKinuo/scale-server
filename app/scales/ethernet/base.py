@@ -2,6 +2,7 @@ from app.scales import ScaleBase
 
 
 class EthernetBase(ScaleBase):
+    """Базовый класс для работы с весами через протоколы TCP"""
     def __init__(self, host: str, port: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.host = host

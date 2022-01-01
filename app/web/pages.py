@@ -3,6 +3,14 @@ from typing import Any
 
 
 def render_weight_visual_form(data: Any) -> str:
+    """
+    Рендер визуальной формы данных веса
+    Args:
+        data (typing.Any): Данные веса, которые необходимо вывести
+
+    Returns:
+        str - Рендер страницы
+    """
     return f"""<!DOCTYPE HTML PUBLIC />
 <html>
 <head>

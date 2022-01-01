@@ -3,6 +3,12 @@ from app.settings import config
 
 
 def get_weight_percent() -> float:
+    """
+    Получение установленного процента веса
+
+    Returns:
+        float - Процент веса
+    """
     try:
         with open(config.PERCENT_SAVE_PATH, 'r', encoding='utf-8') as percent_file:
             weight_percent = str(literal_eval(percent_file.read()).get('weight_percent')).replace(',', '.')
@@ -13,5 +19,10 @@ def get_weight_percent() -> float:
 
 
 def set_weight_percent(weight: float):
+    """
+    Установить процент веса
+    Args:
+        weight (float): Процент веса
+    """
     with open(config.PERCENT_SAVE_PATH, 'w', encoding='UTF-8') as percent_file:
         percent_file.write(str({'weight_percent': weight}))  # Сохраняем в файл значение процента

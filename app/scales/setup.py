@@ -9,7 +9,7 @@ def init_scales() -> list[ScaleBase]:
     """
     Инициализация подключения к весам
     Returns:
-        list[ScaleBase]:
+        list[ScaleBase]: Список классов весов
     """
     return [SerialProtocols[scale.get('protocol').upper()].value(**scale) if 'host' not in scale else
             EthernetProtocols[scale.get('protocol').upper()].value(**scale) for scale in config.SCALES_SERIALS]
@@ -19,6 +19,6 @@ def init_output() -> list[SerialOutput]:
     """
     Инициализация подключения к устройствам вывода
     Returns:
-        list[SerialOutput]:
+        list[SerialOutput]: Список классов устройств вывода
     """
     return [SerialOutput(**output) for output in config.OUTPUT_SERIALS]

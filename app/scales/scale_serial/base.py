@@ -6,10 +6,16 @@ logger = getLogger(__name__)
 
 
 class SerialBase:
-    """Класс для работы с COM-PORT на выводящие устройства"""
+    """Базовый класс для работы с устройствами по comport"""
 
-    def __init__(self, port: str, baudrate: int = 9600, byte_size=8, parity='n', stop_bits=1,
-                 timeout: float = 0, *args, **kwargs):
+    def __init__(self,
+                 port: str,
+                 baudrate: int = 9600,
+                 byte_size: int = 8,
+                 parity: str = 'n',
+                 stop_bits: int = 1,
+                 timeout: float = 0,
+                 *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.port = port

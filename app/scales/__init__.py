@@ -17,6 +17,14 @@ class ScaleBase:
         pass
 
     @classmethod
-    def subtract_percent(cls, weight: int):
+    def subtract_percent(cls, weight: int) -> float:
+        """
+        Добавить процент к весу
+        Args:
+            weight (int): Вес, к которому необходимо добавить вес
+
+        Returns:
+            float - Вес с процентом
+        """
         weight_percent = get_weight_percent()
         return weight / 100 * (100 - weight_percent)

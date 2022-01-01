@@ -56,9 +56,9 @@ class MidlScale(SerialBase, ScaleBase):
             try:
                 return float(''.join(str(x) for x in raw_weight_data[:-2])[::-1])
             except AttributeError as err:
-                raise ValueError(f"Невозможно получить данные с весов") from err
+                raise ValueError("Невозможно получить данные с весов") from err
         else:
-            raise ValueError(f"Невозможно получить данные с весов")
+            raise ValueError("Невозможно получить данные с весов")
 
     def get_weight(self) -> float:
         """

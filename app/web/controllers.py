@@ -34,7 +34,7 @@ async def send_weight_data(request: web.Request) -> web.Response:
         return web.Response(body=response)
 
 
-async def set_weight_percent(cls, request: web.Request) -> web.Response:
+async def set_weight_percent(request: web.Request) -> web.Response:
     """Установить процент деления веса"""
     weight_percent = request.query.get('value') or 0
     response = web.HTTPMovedPermanently(location="/getp")

@@ -1,7 +1,8 @@
 from logging import getLogger, WARNING
 
-from aiohttp import web
 from asyncio import get_event_loop
+
+from aiohttp import web
 
 from app.settings import config
 from app.web import routes
@@ -37,6 +38,7 @@ async def _start_site(app: web.Application, host: str, port: int):
 
 
 def start():
+    """Старт веб-сервисов"""
     loop = get_event_loop()
     loop.create_task(_start_site(transmission, host=config.TRANSMISSION_HOST, port=config.TRANSMISSION_PORT))
     loop.create_task(_start_site(visual, host=config.VISUAL_HOST, port=config.VISUAL_PORT))

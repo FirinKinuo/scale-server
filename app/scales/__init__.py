@@ -3,9 +3,10 @@ from app.scales.percent import get_weight_percent
 
 class ScaleBase:
     """Базовый класс, описывающий все классы для работы с весами"""
-    def __init__(self, protocol: str, weight_multiplier: float = 1.0):
+    def __init__(self, protocol: str, weight_multiplier: float = 1.0, decimal_digits=3):
         self.protocol = protocol
         self.weight_multiplier = weight_multiplier
+        self.decimal_digits = decimal_digits
         self.last_weight = 0
 
     def connect(self):

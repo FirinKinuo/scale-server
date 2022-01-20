@@ -12,8 +12,14 @@ log = getLogger(__name__)
 
 
 async def send_weight_data(request: web.Request) -> web.Response:
-    """Отправка данных в простой фо рме"""
+    """Отправка данных в простой форме"""
     response = "error"
+
+    def round_weight(data: float, count: int) -> float:
+        """"""
+        integer, decimal = str(data / 1000).split('.')
+        return float(f'{integer}.{decimal[:count]}')
+
     try:
         scale_id = int(request.match_info.get('com') or 1) - 1
         scale = SCALES[scale_id]
@@ -23,8 +29,10 @@ async def send_weight_data(request: web.Request) -> web.Response:
         if weight is None:
             raise ValueError(f"{scale}: Данные с весов не могут быть получены!")
 
-        response = f"ves:{scale.subtract_percent(weight) / 1000};vesreal:{weight / 1000}" if config.USE_PERCENT \
-            else f"ves:{weight / 1000}"
+        response = f"ves:" \
+                   f"{round_weight(data=scale.subtract_percent(weight=weight), count=scale.decimal_digits)};" \
+                   f"vesreal:{round_weight(data=weight, count=scale.decimal_digits)}" \
+            if config.USE_PERCENT else f"ves:{round_weight(data=weight, count=scale.decimal_digits)}"
 
         log.info(f"Scale ID: {scale_id + 1} | Запрошенный вес: {response} | {scale}")
 
@@ -60,7 +68,7 @@ async def send_web_form(request: web.Request) -> web.Response:
         scale_id = int(request.match_info.get('com') or 1) - 1
         scale = SCALES[scale_id]
 
-        weight = scale.get_weight()
+        weight = scale.get_weight() * scale.weight_multiplier
 
         if weight is None:
             raise ValueError(f"{scale}: Данные с весов не могут быть получены!")

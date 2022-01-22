@@ -50,7 +50,7 @@ class MidlScale(SerialBase, ScaleBase):
             ValueError: Если невозможно получить данные о весе от терминала
         """
         self.serial.write(b'\x0a')
-
+        sleep(0.3)
         if self.serial.in_waiting:
             raw_weight_data = self.serial.read(self.serial.in_waiting)
             try:
@@ -58,7 +58,7 @@ class MidlScale(SerialBase, ScaleBase):
             except AttributeError as err:
                 raise ValueError("Невозможно получить данные с весов") from err
         else:
-            raise ValueError("Невозможно получить данные с весов")
+            raise ValueError("Невозможно подключиться к весам")
 
     def get_weight(self) -> float:
         """

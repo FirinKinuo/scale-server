@@ -1,5 +1,6 @@
 debug: False
 use_percent: False
+log_level: info  # debug, info, error, critical
 
 web:
   transmission:
@@ -10,26 +11,35 @@ web:
     host: 0.0.0.0
     port: 3001
 
-serial:
-  scales:
-    - host: 192.168.1.15
-      port: 5001
-      protocol: Proto100
-      weight_multiplier: 1
-      decimal_digits: 0
+# Protocols:
+#
+# Serial:
+#   MIDL
+#
+# Ethernet:
+#    Proto100
+#    MERA
+#
+scales:
+  - host: 192.168.1.15
+    port: 5001
+    protocol: Proto100
+    weight_multiplier: 1
+    decimal_digits: 0
 
-    - port: /dev/ttyS0
-      baudrate: 9600
-      byte_size: 8
-      parity: N
-      stop_bits: 1
-      auto_transfer: False
-      protocol: MIDL
-      weight_multiplier: 1
+  - port: /dev/ttyS0
+    baudrate: 9600
+    byte_size: 8
+    parity: N
+    stop_bits: 1
+    auto_transfer: False
+    protocol: MIDL
+    weight_multiplier: 1
+    decimal_digits: 0
 
-#  output:
-#    - port: /dev/ttyS0
-#      baudrate: 9600
-#      byte_size: 8
-#      parity: N
-#      stop_bits: 1
+output:
+  - port: /dev/ttyS0
+    baudrate: 9600
+    byte_size: 8
+    parity: N
+    stop_bits: 1

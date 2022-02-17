@@ -31,8 +31,10 @@ class MidlScale(SerialBase, ScaleBase):
         """
         self.serial.flushInput()
         sleep(0.12)
+        log.debug(f"{self} | Bytes in waiting: {self.serial.in_waiting}")
         if self.serial.in_waiting:
             raw_weight_data = self.serial.read(self.serial.in_waiting).decode('Windows-1251')
+            log.debug(f"{self} | Raw data: {raw_weight_data}")
             try:
                 self.last_weight = float(re.findall(r"(\d+\.?\d*)", raw_weight_data)[-1])
             except (AttributeError, IndexError) as err:
@@ -53,6 +55,7 @@ class MidlScale(SerialBase, ScaleBase):
         sleep(0.3)
         if self.serial.in_waiting:
             raw_weight_data = self.serial.read(self.serial.in_waiting)
+            log.debug(f"{self} | Raw data: {raw_weight_data}")
             try:
                 return float(''.join(str(x) for x in raw_weight_data[:-2])[::-1])
             except AttributeError as err:

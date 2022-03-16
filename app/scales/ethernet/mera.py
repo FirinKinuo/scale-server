@@ -21,6 +21,6 @@ class MeraRequest(EthernetBase):
         """
         try:
             weight_request = requests.get(f"http://{self.host}:{self.port}/weight.html", timeout=2.5).text
-            return float(weight_request)
+            return float(weight_request or 0)  # Когда вес равняется 0, то приходит пустая строка
         except requests.ConnectTimeout as err:
             raise TimeoutError(f"Невозможно подключиться к терминалу {self.host}:{self.port}") from err

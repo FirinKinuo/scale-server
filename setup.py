@@ -19,7 +19,7 @@ setup(
     version=VERSION,
     packages=MODULES,
     url='https://github.com/FirinKinuo/scale-server',
-    license='GPL-3.0',
+    license='AGPL-3.0',
     author='fkinuo',
     author_email='deals@fkinuo.ru',
     description=DESCRIPTION,

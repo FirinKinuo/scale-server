@@ -9,7 +9,7 @@ ifeq (, $(shell which $(PYTHON_PATH) ))
   $(error "PYTHON=$(PYTHON_PATH) not found")
 endif
 
-PYTHON_VERSION_MIN=3.8
+PYTHON_VERSION_MIN=3.9
 PYTHON_VERSION=$(shell $(PYTHON_PATH) -c 'import sys; print("%d.%d"% sys.version_info[0:2])' )
 PYTHON_VERSION_OK=$(shell $(PYTHON_PATH) -c 'print(int(float($(PYTHON_VERSION)) >= float($(PYTHON_VERSION_MIN))))')
 
@@ -31,12 +31,12 @@ install:
 	virtualenv --python=$(PYTHON_PATH) "$(ROOT_DIR)/venvScaleServer"
 	"$(ROOT_DIR)/venvScaleServer/bin/python3" "$(ROOT_DIR)/setup.py" install
 
-	mkdir $(EXTERNAL_FILES_DIR)
-	mkdir $(LOGS_DIR)
+	-mkdir $(EXTERNAL_FILES_DIR)
+	-mkdir $(LOGS_DIR)
 
-	cp "$(ROOT_DIR)/config.yaml.sample" "$(EXTERNAL_FILES_DIR)/config.yaml"
+	-cp "$(ROOT_DIR)/config.yaml.sample" "$(EXTERNAL_FILES_DIR)/config.yaml"
 
-	ln -s "$(ROOT_DIR)/venvScaleServer/bin/scale-server" $(SCALE_SERVER_PATH)
+	-ln -s "$(ROOT_DIR)/venvScaleServer/bin/scale_server" $(SCALE_SERVER_PATH)
 
 clear-install:
 	make clear

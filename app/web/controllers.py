@@ -24,7 +24,7 @@ async def send_weight_data(request: web.Request) -> web.Response:
         scale_id = int(request.match_info.get('com') or 1) - 1
         scale = SCALES[scale_id]
 
-        weight = scale.get_weight() * scale.weight_multiplier
+        weight = scale.get_weight_one_time_connect() * scale.weight_multiplier
 
         if weight is None:
             raise ValueError(f"{scale}: Данные с весов не могут быть получены!")

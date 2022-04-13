@@ -12,7 +12,7 @@ endif
 
 PYTHON_VERSION_MIN=3.8
 PYTHON_VERSION=$(shell $(PYTHON_PATH) -c 'import sys; print("%d.%d"% sys.version_info[0:2])' )
-PYTHON_VERSION_OK=$(shell $(PYTHON_PATH) -c 'print(int(float($(PYTHON_VERSION)) >= float($(PYTHON_VERSION_MIN))))')
+PYTHON_VERSION_OK=$(shell $(PYTHON_PATH) -c 'import sys; print(int(int(sys.version_info[1]) > int($(PYTHON_VERSION_MIN)[2:])))')
 
 ifeq ($(PYTHON_VERSION_OK),0)
   $(error "Need python $(PYTHON_VERSION) >= $(PYTHON_VERSION_MIN)")

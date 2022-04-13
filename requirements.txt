@@ -2,5 +2,3 @@ aiohttp~=3.8.1
 requests~=2.27.1
 pyserial~=3.5
 PyYAML~=6.0
-setuptools~=62.1.0
-wheel~=0.37.1

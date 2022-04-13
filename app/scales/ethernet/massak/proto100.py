@@ -4,7 +4,7 @@ from typing import Any
 from enum import Enum
 from logging import getLogger
 
-from app.scales.ethernet.base import EthernetBase
+from app.scales.ethernet import EthernetBase
 
 log = getLogger(__name__)
 
@@ -41,7 +41,6 @@ class ProtoConnection(EthernetBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.connected = False
         self.connection = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         self.connection.settimeout(1.5)
 
@@ -87,6 +86,9 @@ class ProtoConnection(EthernetBase):
         raw_weight = self.connection.recv(response_size)
 
         return raw_weight.hex()
+
+    def disconnect(self):
+        self._init_new_connection()
 
     @staticmethod
     def _get_command_code(command_string: str) -> int:

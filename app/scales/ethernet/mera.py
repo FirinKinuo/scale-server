@@ -2,7 +2,7 @@ from logging import getLogger
 
 import requests
 
-from app.scales.ethernet.base import EthernetBase
+from app.scales.ethernet import EthernetBase
 
 log = getLogger(__name__)
 

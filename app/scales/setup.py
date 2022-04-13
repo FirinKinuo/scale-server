@@ -2,7 +2,7 @@ from app.settings import config
 from app.scales import ScaleBase
 from app.scales.scale_serial.protocols import SerialProtocols
 from app.scales.scale_serial.output import SerialOutput
-from app.scales.ethernet import EthernetProtocols
+from app.scales.ethernet.protocols import EthernetProtocols
 
 
 def init_scales() -> list[ScaleBase]:

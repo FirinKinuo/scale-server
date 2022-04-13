@@ -1,4 +1,4 @@
-from app.scales.scale_serial.base import SerialBase
+from app.scales.scale_serial import SerialBase
 
 
 class SerialOutput(SerialBase):

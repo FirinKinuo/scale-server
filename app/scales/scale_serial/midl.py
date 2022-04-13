@@ -4,13 +4,12 @@ import re
 from logging import getLogger
 from time import sleep
 
-from app.scales.scale_serial.base import SerialBase
-from app.scales import ScaleBase
+from app.scales.scale_serial import SerialBase
 
 log = getLogger(__name__)
 
 
-class MidlScale(SerialBase, ScaleBase):
+class MidlScale(SerialBase):
     """Класс для работы с весами по ком-порту"""
 
     def __init__(self, auto_transfer: bool, **kwargs):
